@@ -15,7 +15,8 @@ const app = express();
 const server = http.createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
 
-const PORT = 3001;
+const PORT = 8080;
+const LISTEN_IP = '0.0.0.0'; // Listen on all interfaces
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
@@ -30,12 +31,12 @@ let peerCounter = 0;
 let workerIndex = 0;
 
 const CONFIG = {
-    PORT: parseInt(process.env.PORT || '3001'),
+    PORT: PORT,
     MEDIASOUP: {
         WORKER_COUNT: parseInt(process.env.MEDIASOUP_WORKERS || '2'),
         RTC_MIN_PORT: parseInt(process.env.RTC_MIN_PORT || '40000'),
         RTC_MAX_PORT: parseInt(process.env.RTC_MAX_PORT || '49999'),
-        ANNOUNCED_IP: process.env.ANNOUNCED_IP || '127.0.0.1',
+        ANNOUNCED_IP: process.env.MEDIASOUP_ANNOUNCED_IP || '127.0.0.1',
     },
     LIMITS: {
         MAX_PEERS_PER_ROOM: parseInt(process.env.MAX_PEERS_PER_ROOM || '50'),
@@ -640,7 +641,11 @@ wss.on('connection', (ws, request) => {
 });
 
 
-server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://192.168.0.105:${PORT}`);
+// server.listen(PORT, LISTEN_IP, () => {
+//     console.log(`Server running on http://192.168.0.105:${PORT}`);
+// });
+
+server.listen(PORT, LISTEN_IP, () => {
+    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 });
 

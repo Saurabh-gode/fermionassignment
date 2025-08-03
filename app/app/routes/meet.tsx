@@ -648,7 +648,7 @@ const MeetComponent = () => {
     // WebSocket connection setup
     useEffect(() => {
         // const socket = new WebSocket('ws://localhost:3001');
-        const socket = new WebSocket('ws://192.168.0.105:3001');
+        const socket = new WebSocket('ws://54.175.184.7:8080');
         socketRef.current = socket;
 
         socket.onopen = () => console.log("WebSocket connected");

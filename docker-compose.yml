@@ -16,6 +16,14 @@ services:
       - "8080"
     environment:
       - NODE_ENV=production
+      - PORT=8080
+      - MEDIASOUP_ANNOUNCED_IP=54.175.184.7
+      - MEDIASOUP_WORKERS=2
+      - RTC_MIN_PORT=40000
+      - RTC_MAX_PORT=49999
+      - MAX_PEERS_PER_ROOM=50
+      - MAX_PRODUCERS_PER_PEER=4
+      - MAX_CONSUMERS_PER_PEER=200
     networks:
       - app-network
 
