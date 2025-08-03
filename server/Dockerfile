@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:22.16.0-alpine
 WORKDIR /server
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 COPY --from=builder /server/dist ./dist
 EXPOSE 8080
 CMD ["node", "dist/app.js"]
