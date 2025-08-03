@@ -2,7 +2,7 @@
 FROM node:22.16.0-alpine AS builder
 WORKDIR /server
 COPY package*.json ./
-RUN npm ci
+RUN npm i
 COPY . ./
 RUN npm run build
 
@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:22.16.0-alpine
 WORKDIR /server
 COPY package*.json ./
-RUN npm ci
+RUN npm i
 COPY --from=builder /server/dist ./dist
 EXPOSE 8080
 CMD ["node", "dist/app.js"]
