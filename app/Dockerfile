@@ -1,22 +1,25 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
+# Stage 1: Install all dependencies (including dev dependencies)
+FROM node:22.16.0-alpine AS development-dependencies-env
 WORKDIR /app
+COPY app/package*.json ./
 RUN npm ci
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
+# Stage 2: Install production dependencies
+FROM node:22.16.0-alpine AS production-dependencies-env
 WORKDIR /app
+COPY app/package*.json ./
 RUN npm ci --omit=dev
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+# Stage 3: Build the React application
+FROM node:22.16.0-alpine AS build-env
 WORKDIR /app
+COPY app/ ./
+COPY --from=development-dependencies-env /app/node_modules ./node_modules
 RUN npm run build
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
-CMD ["npm", "run", "start"]
+# Stage 4: Prepare static files for NGINX
+FROM nginx:alpine
+COPY --from=build-env /app/dist /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;"]

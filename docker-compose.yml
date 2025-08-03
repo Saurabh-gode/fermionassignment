@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: react_app
+    networks:
+      - app-network
+
+  node_app:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: node_app
+    expose:
+      - "8080"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - node_app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
