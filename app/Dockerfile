@@ -19,6 +19,6 @@ RUN npm run build
 
 # Stage 4: Prepare static files for NGINX
 FROM nginx:alpine
-COPY --from=build-env /app/dist /usr/share/nginx/html
+COPY --from=build-env /app/build /usr/share/nginx/html
 EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
