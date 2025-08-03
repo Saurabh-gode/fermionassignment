@@ -22,6 +22,9 @@ RUN npm run build
 # Stage 2: Create production image
 FROM node:22.16.0-alpine
 
+# Install Python, pip, and build tools for mediasoup postinstall
+RUN apk add --no-cache python3 py3-pip make g++ linux-headers
+
 # Set working directory
 WORKDIR /server
 
