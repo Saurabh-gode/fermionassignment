@@ -32,7 +32,7 @@ WORKDIR /server
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy built JavaScript files from builder stage
 COPY --from=builder /server/dist ./dist
